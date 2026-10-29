@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WW | Наши соцсети</title>
+<style>
+  /* ========== БАЗОВЫЕ СТИЛИ ========== */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #020813;
+    background-image: radial-gradient(circle at 50% 0%, #0a1c3f 0%, #020813 70%);
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Плавающие светящиеся шары */
+  body::before,
+  body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.4;
+    animation: float 15s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::before { width: 400px; height: 400px; background: #0055ff; top: -100px; left: -100px; }
+  body::after { width: 350px; height: 350px; background: #00e5ff; bottom: -100px; right: -100px; animation-delay: -7s; }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, 40px) scale(1.2); }
+  }
+
+  /* ========== ЭКРАН ЗАГРУЗКИ ========== */
+  #preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #020813;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+  }
+  #preloader.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .loader-logo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0055ff, #00e5ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 28px;
+    box-shadow: 0 0 40px rgba(0, 229, 255, 0.5);
+    animation: loaderPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes loaderPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(0, 229, 255, 0.5); }
+    50% { transform: scale(1.08); box-shadow: 0 0 70px rgba(0, 229, 255, 0.8); }
+  }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(0, 229, 255, 0.15);
+    border-top-color: #00e5ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 20px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .loader-text {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: textBlink 1.8s ease-in-out infinite;
+  }
+
+  @keyframes textBlink {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  /* ========== ОСНОВНОЙ КОНТЕНТ ========== */
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 440px;
+    background: rgba(5, 15, 35, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(0, 229, 255, 0.15);
+    border-radius: 32px;
+    padding: 40px 30px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 85, 255, 0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .container.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Аватарка */
+  .avatar-container {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    position: relative;
+    box-shadow: 0 0 30px rgba(0, 140, 255, 0.6), inset 0 0 20px rgba(0, 229, 255, 0.5);
+    border: 2px solid rgba(0, 229, 255, 0.4);
+    animation: pulse-glow 3s ease-in-out infinite;
+    background: #000;
+    overflow: hidden;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 30px rgba(0, 140, 255, 0.6), inset 0 0 20px rgba(0, 229, 255, 0.5); }
+    50% { box-shadow: 0 0 50px rgba(0, 229, 255, 0.8), inset 0 0 30px rgba(0, 140, 255, 0.8); }
+  }
+  .avatar-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+  }
+
+  h1 {
+    color: #fff;
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+  }
+  .subtitle {
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  /* Музыкальная плашка */
+  .music-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 85, 255, 0.1);
+    border: 1px solid rgba(0, 229, 255, 0.2);
+    border-radius: 16px;
+    padding: 10px 14px;
+    margin-bottom: 22px;
+    box-shadow: inset 0 0 20px rgba(0, 85, 255, 0.1);
+  }
+  .music-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #0055ff, #00e5ff);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 140, 255, 0.5);
+  }
+  .music-btn:hover { transform: scale(1.08); }
+  .music-btn:active { transform: scale(0.95); }
+  .music-btn svg { width: 18px; height: 18px; fill: #fff; }
+  .music-info { flex: 1; min-width: 0; }
+  .music-title { color: #fff; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .music-status { color: rgba(0, 229, 255, 0.7); font-size: 11px; margin-top: 2px; }
+  .equalizer { display: flex; align-items: flex-end; gap: 2px; height: 20px; margin-left: auto; }
+  .equalizer span { width: 3px; background: linear-gradient(to top, #0055ff, #00e5ff); border-radius: 2px; height: 4px; transition: height 0.2s ease; }
+  .equalizer.playing span { animation: eq 0.9s ease-in-out infinite; }
+  .equalizer.playing span:nth-child(1) { animation-delay: 0s; }
+  .equalizer.playing span:nth-child(2) { animation-delay: 0.15s; }
+  .equalizer.playing span:nth-child(3) { animation-delay: 0.3s; }
+  .equalizer.playing span:nth-child(4) { animation-delay: 0.45s; }
+  @keyframes eq { 0%, 100% { height: 4px; } 50% { height: 18px; } }
+
+  /* Кнопки соцсетей */
+  .links { display: flex; flex-direction: column; gap: 12px; }
+  .link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    background: rgba(0, 20, 50, 0.5);
+    border: 1px solid rgba(0, 140, 255, 0.2);
+    border-radius: 16px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    pointer-events: none;
+  }
+  .link:hover::after { transform: translateX(100%); }
+  .link:hover {
+    background: rgba(0, 85, 255, 0.15);
+    transform: scale(1.015);
+    border-color: rgba(0, 229, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 140, 255, 0.2);
+  }
+  .link:active { transform: scale(0.98); }
+  .link .icon {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  .link:hover .icon { transform: scale(1.05) rotate(-4deg); }
+  .icon svg { width: 22px; height: 22px; fill: #fff; }
+  .telegram { background: linear-gradient(135deg, #0088cc, #00a8e8); }
+  .youtube  { background: linear-gradient(135deg, #ff0000, #cc0000); }
+  .tiktok   { background: linear-gradient(135deg, #000000, #25f4ee); }
+  .link .info { display: flex; flex-direction: column; gap: 1px; flex: 1; min-width: 0; }
+  .link .name { font-size: 15px; font-weight: 600; }
+  .link .handle { font-size: 12px; color: rgba(255, 255, 255, 0.5); font-weight: 400; }
+  .chevron {
+    width: 8px; height: 8px;
+    border-top: 2px solid rgba(0, 229, 255, 0.5);
+    border-right: 2px solid rgba(0, 229, 255, 0.5);
+    transform: rotate(45deg);
+    transition: all 0.25s ease;
+    flex-shrink: 0; margin-right: 4px;
+  }
+  .link:hover .chevron { border-color: #00e5ff; transform: rotate(45deg) translateX(3px); }
+
+  /* ========== РАЗДЕЛ НОВОСТЕЙ ========== */
+  .news-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(0, 140, 255, 0.2);
+  }
+  .news-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .news-header h2 {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .news-header h2::before {
+    content: '';
+    width: 4px; height: 16px; border-radius: 2px;
+    background: linear-gradient(to bottom, #0055ff, #00e5ff);
+    box-shadow: 0 0 10px #00e5ff;
+  }
+  .news-refresh {
+    background: rgba(0, 229, 255, 0.1);
+    border: 1px solid rgba(0, 229, 255, 0.2);
+    color: #00e5ff;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .news-refresh:hover { background: rgba(0, 229, 255, 0.2); }
+  .news-refresh:active { transform: scale(0.95); }
+
+  .news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .news-list::-webkit-scrollbar { width: 4px; }
+  .news-list::-webkit-scrollbar-track { background: transparent; }
+  .news-list::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.3); border-radius: 2px; }
+
+  .news-item {
+    background: rgba(0, 20, 50, 0.4);
+    border: 1px solid rgba(0, 140, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px 14px;
+    transition: all 0.25s ease;
+    animation: newsFadeIn 0.5s ease-out both;
+  }
+  .news-item:hover {
+    background: rgba(0, 85, 255, 0.15);
+    border-color: rgba(0, 229, 255, 0.3);
+    transform: translateX(3px);
+  }
+  @keyframes newsFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .news-item-title {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .news-item-text {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 12px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .news-item-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    color: rgba(0, 229, 255, 0.5);
+  }
+  .news-item-meta a {
+    color: #00e5ff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .news-item-meta a:hover { opacity: 0.7; }
+
+  /* Скелетон-загрузка новостей */
+  .skeleton-news {
+    background: rgba(0, 20, 50, 0.4);
+    border-radius: 12px;
+    padding: 14px;
+    animation: shimmer 1.8s infinite;
+  }
+  .skeleton-line {
+    height: 10px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, rgba(0, 85, 255, 0.1) 0%, rgba(0, 229, 255, 0.25) 50%, rgba(0, 85, 255, 0.1) 100%);
+    background-size: 200% 100%;
+    margin-bottom: 8px;
+  }
+  .skeleton-line:last-child { width: 60%; margin-bottom: 0; }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* О нас и разработчики */
+  .about { margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(0, 140, 255, 0.2); }
+  .about h2 { color: #fff; font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .about h2::before { content: ''; width: 4px; height: 16px; border-radius: 2px; background: linear-gradient(to bottom, #0055ff, #00e5ff); box-shadow: 0 0 10px #00e5ff; }
+  .about-text { color: rgba(255, 255, 255, 0.6); font-size: 13px; line-height: 1.6; margin-bottom: 20px; }
+  .devs-title { color: rgba(0, 229, 255, 0.6); font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  .devs { display: flex; flex-direction: column; gap: 8px; }
+  .dev {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px;
+    background: rgba(0, 20, 50, 0.4);
+    border: 1px solid rgba(0, 140, 255, 0.1);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+  .dev:hover { background: rgba(0, 85, 255, 0.15); transform: translateX(3px); border-color: rgba(0, 229, 255, 0.3); }
+  .dev-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  .dev:nth-child(1) .dev-avatar { background: linear-gradient(135deg, #0055ff, #00e5ff); }
+  .dev:nth-child(2) .dev-avatar { background: linear-gradient(135deg, #0033aa, #007bff); }
+  .dev:nth-child(3) .dev-avatar { background: linear-gradient(135deg, #00e5ff, #0055ff); }
+  .dev-name { color: #fff; font-size: 14px; font-weight: 500; }
+  .dev-role { color: rgba(255, 255, 255, 0.4); font-size: 11px; margin-left: auto; font-weight: 500; }
+  .footer { margin-top: 26px; text-align: center; color: rgba(255, 255, 255, 0.3); font-size: 11px; }
+
+  @media (max-width: 480px) {
+    .container { padding: 32px 22px; }
+    h1 { font-size: 22px; }
+    .link { padding: 11px 12px; }
+    .avatar-container { width: 100px; height: 100px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ЭКРАН ЗАГРУЗКИ -->
+  <div id="preloader">
+    <div class="loader-logo">WW</div>
+    <div class="spinner"></div>
+    <div class="loader-text">Загрузка...</div>
+  </div>
+
+  <!-- ОСНОВНОЙ КОНТЕНТ -->
+  <div class="container" id="mainContainer">
+    
+    <!-- АВАТАРКА -->
+    <!-- Для GitHub: загрузите картинку в репозиторий и укажите путь, например: src="logo.png" -->
+    <div class="avatar-container">
+      <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=200&auto=format&fit=crop" alt="WW Logo">
+    </div>
+
+    <h1>Наши соцсети</h1>
+    <p class="subtitle">Будь в курсе всего самого интересного</p>
+
+    <!-- Музыка -->
+    <div class="music-bar">
+      <button class="music-btn" id="musicBtn" aria-label="Включить музыку">
+        <svg id="playIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="pauseIcon" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <div class="music-info">
+        <div class="music-title">Cyber Ambient</div>
+        <div class="music-status" id="musicStatus">Нажми, чтобы включить</div>
+      </div>
+      <div class="equalizer" id="equalizer">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- Ссылки -->
+    <div class="links">
+      <a class="link" href="https://t.me/wwlobby" target="_blank" rel="noopener">
+        <div class="icon telegram"><svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg></div>
+        <div class="info"><span class="name">Telegram</span><span class="handle">@wwlobby</span></div>
+        <div class="chevron"></div>
+      </a>
+      <a class="link" href="https://youtube.com/@news_ww_tg" target="_blank" rel="noopener">
+        <div class="icon youtube"><svg viewBox="0 0 24 24"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.5A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.12 2.14c1.88.5 9.38.5 9.38.5s7.5 0 9.38-.5a3.02 3.02 0 0 0 2.12-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81zM9.55 15.57V8.43L15.82 12l-6.27 3.57z"/></svg></div>
+        <div class="info"><span class="name">YouTube</span><span class="handle">@news_ww_tg</span></div>
+        <div class="chevron"></div>
+      </a>
+      <a class="link" href="https://tiktok.com/@wwlobby_tt" target="_blank" rel="noopener">
+        <div class="icon tiktok"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.65a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1.84-.08z"/></svg></div>
+        <div class="info"><span class="name">TikTok</span><span class="handle">@wwlobby_tt</span></div>
+        <div class="chevron"></div>
+      </a>
+    </div>
+
+    <!-- РАЗДЕЛ НОВОСТЕЙ -->
+    <div class="news-section">
+      <div class="news-header">
+        <h2>Новости</h2>
+        <button class="news-refresh" id="refreshNews">Обновить</button>
+      </div>
+      <div class="news-list" id="newsList">
+        <!-- Скелетон-загрузка -->
+        <div class="skeleton-news"><div class="skeleton-line" style="width:80%"></div><div class="skeleton-line" style="width:100%"></div><div class="skeleton-line" style="width:60%"></div></div>
+        <div class="skeleton-news"><div class="skeleton-line" style="width:90%"></div><div class="skeleton-line" style="width:100%"></div><div class="skeleton-line" style="width:50%"></div></div>
+        <div class="skeleton-news"><div class="skeleton-line" style="width:70%"></div><div class="skeleton-line" style="width:95%"></div><div class="skeleton-line" style="width:60%"></div></div>
+      </div>
+    </div>
+
+    <!-- О нас -->
+    <div class="about">
+      <h2>О нас</h2>
+      <p class="about-text">Мы — команда энтузиастов, которая собирает самое интересное из мира новостей, мемов и крипто-культуры. Подписывайся на наши каналы, чтобы всегда быть в курсе движухи!</p>
+      <div class="devs-title">Разработчики</div>
+      <div class="devs">
+        <div class="dev"><div class="dev-avatar">ЯМ</div><div class="dev-name">Ярослав Манжиков</div><div class="dev-role">Разработчик</div></div>
+        <div class="dev"><div class="dev-avatar">ЖК</div><div class="dev-name">Женя Кузнецов</div><div class="dev-role">Разработчик</div></div>
+        <div class="dev"><div class="dev-avatar">СЛ</div><div class="dev-name">Сергей Лазарев</div><div class="dev-role">Разработчик</div></div>
+      </div>
+    </div>
+
+    <p class="footer">© WW Team · Все права защищены</p>
+  </div>
+
+  <!-- ========== СКРИПТЫ ========== -->
+  <script>
+    // 1. ЭКРАН ЗАГРУЗКИ
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('preloader').classList.add('hidden');
+        document.getElementById('mainContainer').classList.add('visible');
+        loadNews();
+      }, 1500);
+    });
+
+    // 2. МУЗЫКА (Web Audio API)
+    const musicBtn = document.getElementById('musicBtn');
+    const playIcon = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const musicStatus = document.getElementById('musicStatus');
+    const equalizer = document.getElementById('equalizer');
+    let audioCtx = null, isPlaying = false, masterGain = null, schedulerId = null, nextNoteTime = 0, currentStep = 0;
+    const scale = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
+    const chords = [[130.81, 164.81, 196.00], [146.83, 174.61, 220.00], [174.61, 220.00, 261.63], [196.00, 246.94, 293.66]];
+    const NOTE_LENGTH = 0.45, LOOKAHEAD = 0.1;
+
+    function initAudio() { if (audioCtx) return; audioCtx = new (window.AudioContext || window.webkitAudioContext)(); masterGain = audioCtx.createGain(); masterGain.gain.value = 0.18; masterGain.connect(audioCtx.destination); }
+    function playTone(freq, time, duration, type = 'sine', vol = 0.15) { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = type; osc.frequency.value = freq; gain.gain.setValueAtTime(0, time); gain.gain.linearRampToValueAtTime(vol, time + 0.05); gain.gain.exponentialRampToValueAtTime(0.001, time + duration); osc.connect(gain); gain.connect(masterGain); osc.start(time); osc.stop(time + duration + 0.05); }
+    function playPad(freq, time, duration, vol = 0.05) { const osc = audioCtx.createOscillator(); const osc2 = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = 'sine'; osc2.type = 'triangle'; osc.frequency.value = freq; osc2.frequency.value = freq * 2; gain.gain.setValueAtTime(0, time); gain.gain.linearRampToValueAtTime(vol, time + 0.4); gain.gain.linearRampToValueAtTime(0, time + duration); osc.connect(gain); osc2.connect(gain); gain.connect(masterGain); osc.start(time); osc2.start(time); osc.stop(time + duration + 0.1); osc2.stop(time + duration + 0.1); }
+    function scheduleNote(step, time) { const chordIndex = Math.floor(step / 8) % chords.length; const chord = chords[chordIndex]; if (step % 8 === 0) chord.forEach(f => playPad(f, time, NOTE_LENGTH * 8, 0.06)); if (Math.random() < 0.65) playTone(scale[Math.floor(Math.random() * scale.length)], time, NOTE_LENGTH * 1.6, 'sine', 0.12); if (step % 4 === 0) playTone(chord[0] / 2, time, NOTE_LENGTH * 2.5, 'triangle', 0.15); }
+    function scheduler() { while (nextNoteTime < audioCtx.currentTime + LOOKAHEAD) { scheduleNote(currentStep, nextNoteTime); nextNoteTime += NOTE_LENGTH; currentStep = (currentStep + 1) % 32; } schedulerId = setTimeout(scheduler, 25); }
+    function startMusic() { initAudio(); if (audioCtx.state === 'suspended') audioCtx.resume(); nextNoteTime = audioCtx.currentTime + 0.1; currentStep = 0; masterGain.gain.cancelScheduledValues(audioCtx.currentTime); masterGain.gain.setValueAtTime(0, audioCtx.currentTime); masterGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 0.5); scheduler(); isPlaying = true; playIcon.style.display = 'none'; pauseIcon.style.display = ''; musicStatus.textContent = 'Играет сейчас'; equalizer.classList.add('playing'); }
+    function stopMusic() { if (schedulerId) clearTimeout(schedulerId); if (masterGain && audioCtx) { masterGain.gain.cancelScheduledValues(audioCtx.currentTime); masterGain.gain.setValueAtTime(masterGain.gain.value, audioCtx.currentTime); masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4); } isPlaying = false; playIcon.style.display = ''; pauseIcon.style.display = 'none'; musicStatus.textContent = 'На паузе'; equalizer.classList.remove('playing'); }
+    musicBtn.addEventListener('click', () => { if (isPlaying) stopMusic(); else startMusic(); });
+
+    // 3. ЗАГРУЗКА НОВОСТЕЙ ИЗ TELEGRAM (через RSSHub)
+    const newsList = document.getElementById('newsList');
+    const refreshBtn = document.getElementById('refreshNews');
+
+    async function loadNews() {
+      newsList.innerHTML = `
+        <div class="skeleton-news"><div class="skeleton-line" style="width:80%"></div><div class="skeleton-line" style="width:100%"></div><div class="skeleton-line" style="width:60%"></div></div>
+        <div class="skeleton-news"><div class="skeleton-line" style="width:90%"></div><div class="skeleton-line" style="width:100%"></div><div class="skeleton-line" style="width:50%"></div></div>
+      `;
+
+      try {
+        // Используем RSSHub для получения фида Telegram-канала
+        const rssUrl = 'https://rsshub.app/telegram/channel/wwlobby';
+        // Прокси для обхода CORS (необходим для GitHub Pages)
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
+        
+        const response = await fetch(proxyUrl);
+        const text = await response.text();
+        
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, 'text/xml');
+        const items = xml.querySelectorAll('item');
+
+        if (items.length === 0) {
+          throw new Error('Нет новостей');
+        }
+
+        let html = '';
+        for (let i = 0; i < Math.min(items.length, 5); i++) {
+          const item = items[i];
+          const title = item.querySelector('title')?.textContent || 'Без заголовка';
+          const description = item.querySelector('description')?.textContent || '';
+          const link = item.querySelector('link')?.textContent || 'https://t.me/wwlobby';
+          const pubDate = item.querySelector('pubDate')?.textContent || '';
+
+          // Очистка текста от HTML
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = description;
+          let cleanText = tempDiv.textContent.trim().replace(/\s+/g, ' ');
+          if (cleanText.length > 120) cleanText = cleanText.substring(0, 120) + '...';
+
+          let dateStr = '';
+          if (pubDate) {
+            const d = new Date(pubDate);
+            dateStr = d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+          }
+
+          html += `
+            <div class="news-item" style="animation-delay: ${i * 0.1}s;">
+              <div class="news-item-title">${title}</div>
+              ${cleanText ? `<div class="news-item-text">${cleanText}</div>` : ''}
+              <div class="news-item-meta">
+                <span>${dateStr}</span>
+                <a href="${link}" target="_blank" rel="noopener">Читать →</a>
+              </div>
+            </div>
+          `;
+        }
+        newsList.innerHTML = html;
+
+      } catch (error) {
+        console.error('Ошибка загрузки новостей:', error);
+        newsList.innerHTML = `
+          <div style="text-align:center;padding:20px;background:rgba(0,20,50,0.4);border-radius:12px;">
+            <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:12px;">Не удалось загрузить ленту</p>
+            <a href="https://t.me/wwlobby" target="_blank" rel="noopener" style="color:#00e5ff;text-decoration:none;font-size:13px;font-weight:600;">Открыть канал в Telegram →</a>
+          </div>
+        `;
+      }
+    }
+
+    refreshBtn.addEventListener('click', loadNews);
+  </script>
+</body>
+</html>
